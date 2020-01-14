@@ -208,6 +208,15 @@ New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer
 Copy-Item C:\install\AA_v3.exe C:\Users\admin\Desktop
 
 # Установка TeamViewer
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+function Unzip
+{
+    param([string]$zipfile, [string]$outpath)
+
+    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
+}
+Unzip "C:\install\TeamViewer.zip" "C:\install\"
+
 Copy-Item -Path C:\install\TeamViewer\ -Destination C:\Users\admin\ -Recurse
 
 $WshShell = New-Object -comObject WScript.Shell
@@ -215,9 +224,8 @@ $Shortcut = $WshShell.CreateShortcut("C:\Users\admin\Desktop\TeamViewer.lnk")
 $Shortcut.TargetPath = "C:\Users\admin\TeamViewer\App\TeamViewer\TeamViewer.exe"
 $Shortcut.Save()
 
-cd C:\Users\admin\TeamViewer\App\TeamViewer\
+cd C:\install\TeamViewer\TeamViewer\App\TeamViewer
 .\TeamViewer.exe
 cd C:\
-
 #Настройка учетной записи
 netplwiz
