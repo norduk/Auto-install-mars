@@ -1,11 +1,12 @@
-﻿# Ver 1.2
+﻿# Ver 1.4 corp "hidden Neko"
 # Выполнить перед запуском скрипта "Set-ExecutionPolicy Unrestricted"
+
 # Открепить все ярлыки от начального экрана
 $tilecollection = Get-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\Cache\DefaultAccount\*start.tilegrid`$windows.data.curatedtilecollection.tilecollection\Current
 $unpin = $tilecollection.Data[0..25] + ([byte[]](202,50,0,226,44,1,1,0,0))
 New-ItemProperty -Path $tilecollection.PSPath -Name Data -PropertyType Binary -Value $unpin -Force
 
-# Открепить Microsoft Edge и Microsoft Store от панели задач
+# Открепить программы от панели задач
 $Signature = @{
 	Namespace = "WinAPI"
 	Name = "GetStr"
@@ -32,8 +33,10 @@ $unpin = [WinAPI.GetStr]::GetString(5387)
 $apps = (New-Object -ComObject Shell.Application).NameSpace("shell:::{4234d49b-0245-4df3-b780-3893943456e1}").Items()
 $apps | Where-Object -FilterScript {$_.Path -like "Microsoft.MicrosoftEdge*"} | ForEach-Object -Process {$_.Verbs() | Where-Object -FilterScript {$_.Name -eq $unpin} | ForEach-Object -Process {$_.DoIt()}}
 $apps | Where-Object -FilterScript {$_.Path -like "Microsoft.WindowsStore*"} | ForEach-Object -Process {$_.Verbs() | Where-Object -FilterScript {$_.Name -eq $unpin} | ForEach-Object -Process {$_.DoIt()}}
+$apps | Where-Object -FilterScript {$_.Path -like "Microsoft.windowscommunicationsapps*"} | ForEach-Object -Process {$_.Verbs() | Where-Object -FilterScript {$_.Name -eq $unpin} | ForEach-Object -Process {$_.DoIt()}}
 
-# Удаление стандартных UPW прилдожении Microsoft
+
+# Удаление стандартных UPW app
 Get-AppxPackage *bing* | Remove-AppxPackage
 Get-AppxPackage *3dbuilder* | Remove-AppxPackage
 Get-AppxPackage *windowsalarms* | Remove-AppxPackage
@@ -67,6 +70,50 @@ Get-AppxPackage *Yandex* | Remove-AppxPackage
 Get-AppxPackage *Microsoft.ZuneVideo* | Remove-AppxPackage
 Get-AppxPackage *Microsoft.ZuneMusic* | Remove-AppxPackage
 Get-AppxPackage *Microsoft.XboxSpeechToTextOverlay* | Remove-AppxPackage
+Get-AppxPackage *microsoft.windowscommunicationsapps* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.YourPhone* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.XboxSpeechToTextOverlay* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.XboxIdentityProvider* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.XboxGamingOverlay* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.Xbox.TCUI* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.WindowsMaps* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.WindowsFeedbackHub* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.WindowsAlarms* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.Wallet* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.OneConnect* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.Office.OneNote* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.Office.Desktop* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.MixedReality.Portal* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.MicrosoftSolitaireCollection* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.Messaging* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.Getstarted* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.GetHelp* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.BingWeather* | Remove-AppxPackage
+Get-AppxPackage *MAGIXSoftwareGmbH.MovieAudioStudio* | Remove-AppxPackage
+Get-AppxPackage *GOTrustTechnologyInc.GO-TrustAuthenticator* | Remove-AppxPackage
+Get-AppxPackage *Evernote.Evernote* | Remove-AppxPackage
+Get-AppxPackage *eBay* | Remove-AppxPackage
+Get-AppxPackage *CyberLinkCorp.ac.PowerDirectorforacerDesktop* | Remove-AppxPackage
+Get-AppxPackage *CyberLinkCorp.ac.PhotoDirectorforacerDesktop* | Remove-AppxPackage
+Get-AppxPackage *AcerIncorporated.UserExperienceImprovementProgram* | Remove-AppxPackage
+Get-AppxPackage *AcerIncorporated.QuickAccess* | Remove-AppxPackage
+Get-AppxPackage *AcerIncorporated.AcerRegistration* | Remove-AppxPackage
+Get-AppxPackage *AcerIncorporated.AcerCollectionS* | Remove-AppxPackage
+Get-AppxPackage *AcerIncorporated.AcerCareCenterS* | Remove-AppxPackage
+Get-AppxPackage *7EE7776C.LinkedInforWindows* | Remove-AppxPackage
+Get-AppxPackage *4DF9E0F8.Netflix* | Remove-AppxPackage
+Get-AppxPackage *4AE8B7C2.Booking.comPartnerApp* | Remove-AppxPackage
+Get-AppxPackage *26720RandomSaladGamesLLC.Spades* | Remove-AppxPackage
+Get-AppxPackage *26720RandomSaladGamesLLC.SimpleSolitaire* | Remove-AppxPackage
+Get-AppxPackage *26720RandomSaladGamesLLC.SimpleMahjong* | Remove-AppxPackage
+Get-AppxPackage *26720RandomSaladGamesLLC.HeartsDeluxe* | Remove-AppxPackage
+Get-AppxPackage *Windows.PrintDialog* | Remove-AppxPackage
+Get-AppxPackage *Windows.CBSPreview* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.Windows.XGpuEjectDialog* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.Windows.SecureAssessmentBrowser* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.Windows.NarratorQuickStart* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.Windows.Cortana* | Remove-AppxPackage
+Get-AppxPackage *Microsoft.AAD.BrokerPlugin* | Remove-AppxPackage
 
 
 # Разархивация МАРС на диск C
@@ -157,25 +204,33 @@ IF (-not (Test-Path -Path HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR))
 	New-Item -Path HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR -Force
 }
 New-ItemProperty -Path HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR -Name AllowgameDVR -PropertyType DWord -Value 0 -Force
+
 # Отключить игровую панель
 New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR -Name AppCaptureEnabled -PropertyType DWord -Value 0 -Force
 New-ItemProperty -Path HKCU:\System\GameConfigStore -Name GameDVR_Enabled -PropertyType DWord -Value 0 -Force
+
 # Отключить игровой режим
 New-ItemProperty -Path HKCU:\Software\Microsoft\GameBar -Name AllowAutoGameMode -PropertyType DWord -Value 0 -Force
+
 # Отключить подсказки игровой панели
 New-ItemProperty -Path HKCU:\Software\Microsoft\GameBar -Name ShowStartupPanel -PropertyType DWord -Value 0 -Force
+
 # Отобразить "Этот компьютер" на рабочем столе
 New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel -Name "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" -PropertyType DWord -Value 0 -Force
+
 # Не показывать панель "Люди" на панели задач
 IF (-not (Test-Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People))
 {
 	New-Item -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People -Force
 }
 New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People -Name PeopleBand -PropertyType DWord -Value 0 -Force
+
 # Не показывать кнопку Windows Ink Workspace на панели задач
 New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\PenWorkspace -Name PenWorkspaceButtonDesiredVisibility -PropertyType DWord -Value 0 -Force
+
 # Скрыть поле или значок поиска на Панели задач
 New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Search -Name SearchboxTaskbarMode -PropertyType DWord -Value 0 -Force
+
 # Удалить OneDrive
 Stop-Process -Name OneDrive -Force -ErrorAction SilentlyContinue
 Start-Process -FilePath "$env:SystemRoot\SysWOW64\OneDriveSetup.exe" -ArgumentList "/uninstall" -Wait
@@ -194,8 +249,10 @@ else
 Wait-Process -Name OneDriveSetup -ErrorAction SilentlyContinue
 Remove-Item -Path $env:LOCALAPPDATA\Microsoft\OneDrive -Recurse -Force -ErrorAction SilentlyContinue
 $Error.RemoveAt(0)
+
 # Не показывать рекомендации в меню "Пуск"
 New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager -Name SubscribedContent-338388Enabled -PropertyType DWord -Value 0 -Force
+
 # Скрыть папку "Объемные объекты" из "Этот компьютер" и на панели быстрого доступа
 IF (-not (Test-Path -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag"))
 {
@@ -227,5 +284,11 @@ $Shortcut.Save()
 cd C:\install\TeamViewer\TeamViewer\App\TeamViewer
 .\TeamViewer.exe
 cd C:\
+
 #Настройка учетной записи
 netplwiz
+
+#Синхронизация времени
+net start w32time
+w32tm /config /manualpeerlist:ntp1.stratum2.ru /syncfromflags:manual /reliable:yes /update
+
