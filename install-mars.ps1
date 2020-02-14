@@ -1,4 +1,4 @@
-﻿# Ver 1.4 corp "hidden Neko"
+# Ver 1.5 corp "hidden Neko"
 # Выполнить перед запуском скрипта "Set-ExecutionPolicy Unrestricted"
 
 # Открепить все ярлыки от начального экрана
@@ -126,6 +126,31 @@ function Unzip
 }
 Unzip "C:\install\mars.zip" "C:\mars"
 
+#Установка MARS-NMS
+$Title = “Welcome”
+$Info = “Install MARS-NMS”
+$options = [System.Management.Automation.Host.ChoiceDescription[]] @(“&Yes”, “&No”)
+[int]$defaultchoice = 1
+
+$option = $host.UI.PromptForChoice($Title, $Info, $Options, $defaultchoice)
+
+switch($option)
+{
+0 { Write-Host Add-Type -AssemblyName System.IO.Compression.FileSystem
+function Unzip
+{
+    param([string]$zipfile, [string]$outpath)
+
+    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
+}
+Unzip "C:\install\NMS.zip" "C:\mars"
+}
+
+1 { Write-Host $PublishSettings=$false}
+}
+
+
+
 # Создание ярлыков MARS
 $WshShell = New-Object -comObject WScript.Shell
 $Shortcut = $WshShell.CreateShortcut("C:\Users\admin\Desktop\MARS_TeleShellServer.lnk")
@@ -137,6 +162,7 @@ $Shortcut.TargetPath = "C:\mars\MARS_TeleShellClient.exe"
 $Shortcut.Save()
 Copy-Item C:\mars\manual\KPASO-R_RA.pdf C:\Users\admin\Desktop\KPASO-R_RA.pdf
 Copy-Item C:\mars\manual\KPASO-R_RO.pdf C:\Users\admin\Desktop\KPASO-R_RO.pdf
+
 
 # Включение RDP
 Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
